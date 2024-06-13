@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 public class LaboratorioDosJavaa {
 
+    private static BuyDetails clientBuyDetails;
+
     public static void main(String[] args) {
         mainMenu();
     }
@@ -53,26 +55,38 @@ public class LaboratorioDosJavaa {
             if (isAdmin) {
                 menuLogInAdmin();
             } else {
-                menuLogInClient();
+                menuLogInClient(opcIdNumber);
             }
         } else {
             System.out.println("Cliente no encontrado");
         }
     }
 
-    public static void menuLogInClient() {
+    public static void menuLogInClient(int opcIdNumber) {
         Scanner scanner = new Scanner(System.in);
 
         int opc;
         while (true) {
             System.out.println("1. Pedir Pizza");
-            System.out.println("2. Volver al menu anterior");
+            System.out.println("2. Terminar Compra");
             opc = scanner.nextInt();
             switch (opc) {
                 case 1:
-                    orderPizza();
+                    orderPizza(opcIdNumber);
                     break;
                 case 2:
+                    if (clientBuyDetails != null) {
+                        System.out.println("Detalles de la compra:");
+                        System.out.println("Pizza: " + clientBuyDetails.getPizzaName());
+                        System.out.println("Pasta: " + clientBuyDetails.getTypeOfPaste());
+                        System.out.println("Tamaño: " + clientBuyDetails.getPizzaSize());
+                        System.out.println("Ingredientes: " + clientBuyDetails.getIngredients());
+                        System.out.println("Adicionales: " + clientBuyDetails.getAdditionals());
+                        System.out.println("Monto total bruto: " + clientBuyDetails.getGrossTotalAmount());
+                        System.out.println("Monto con descuento: " + clientBuyDetails.getDiscountedAmount());
+                    } else {
+                        System.out.println("No se ha realizado ninguna compra.");
+                    }
                     return;
                 default:
                     System.out.println("Error: Ingrese una opcion valida");
@@ -132,7 +146,7 @@ public class LaboratorioDosJavaa {
 
     }
 
-    public static void orderPizza() {
+    public static void orderPizza(int opcIdNumber) {
         Scanner scanner = new Scanner(System.in);
 
         int opcPastaType;
@@ -225,13 +239,29 @@ public class LaboratorioDosJavaa {
         double baseCostAdditional = Pizza.getAdditionalItems().get(additionals);
 
         //Mostrar codigo de descuento
-        double grossAmount = baseCostAdditional + baseCostPizza;
-        double grossAmountPasta = grossAmount * pastaPercentage;
+        double grossTotalAmount = baseCostPizza + (baseCostPizza * pastaPercentage) + baseCostAdditional;
+        double discountedAmount = grossTotalAmount;
+
+        String discountCode = "";
+        if (selectedPizza.getName().equals("Pepperoni") || selectedPizza.getName().equals("Suprema")) {
+            if (type.equals("Familiar") && ingredients.size() == selectedPizza.getIngredients().size()) {
+                discountCode = generateDiscountCode();
+                discountedAmount = grossTotalAmount * 0.95;
+            }
+        }
+        System.out.println("Monto Total Bruto:" + grossTotalAmount);
+        System.out.println("Monto Total con Descuento: " + discountedAmount);
+        if (!discountCode.isEmpty()) {
+            System.out.println("Codigo de descuento: " + discountCode);
+        }
+        String idBuy = generateIdBuy();
+
+        BuyDetails clientBuyDetails = new BuyDetails(idBuy, selectedPizza.getName(), pasta, type, String.join(", ", ingredients), additionals, discountCode, "", (int) grossTotalAmount, (int) discountedAmount);
         
-        
+        BuyDetails.BuyDetailsDict.put(opcIdNumber,clientBuyDetails);
     }
 
-    // menuSignUp funciones
+// menuSignUp funciones
     public static void clientSignUp() {
         Scanner scanner = new Scanner(System.in);
 
@@ -277,10 +307,6 @@ public class LaboratorioDosJavaa {
     }
 
     public static void printNewClientInfo(Registro client) {
-//        for (Integer key : registro.signUpClient.keySet()) {
-//            registro client = registro.signUpClient.get(key);
-//  Mostrar todos los clientes 
-//  registro client = registro.signUpClient.get(opcIdNumber);
         System.out.println("Informacion del cliente:");
         System.out.println("Cedula: " + client.getIdNumber());
         System.out.println("Nombre: " + client.getName());
@@ -367,14 +393,26 @@ public class LaboratorioDosJavaa {
         }
 
     }
-        public static String generateDiscountCode() {
-        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder codigo = new StringBuilder();
+
+    public static String generateDiscountCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
-            int indice = random.nextInt(caracteres.length());
-            codigo.append(caracteres.charAt(indice));
+            int index = random.nextInt(characters.length());
+            code.append(characters.charAt(index));
         }
-        return codigo.toString();
+        return code.toString();
+    }
+
+    public static String generateIdBuy() {
+        String characters = "123456789";
+        StringBuilder identificatorBuy = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(characters.length());
+            identificatorBuy.append(characters.charAt(index));
+        }
+        return identificatorBuy.toString();
     }
 }
