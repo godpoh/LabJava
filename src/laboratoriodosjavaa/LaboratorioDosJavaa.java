@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Collection;
 import java.util.Scanner;
 
 public class LaboratorioDosJavaa {
 
     public static HashMap<Integer, List<BuyDetails>> BuyDetailsDict = new HashMap<>();
+     public static double grossTotalAmountAcumulative = 0;
+    public static double discountedAmountAcumulative = 0; 
 
     public static void main(String[] args) {
         mainMenu();
@@ -80,6 +81,8 @@ public class LaboratorioDosJavaa {
                     if (BuyDetailsDict.containsKey(opcIdNumber)) {
                         List<BuyDetails> clientBuyDetailsList = BuyDetailsDict.get(opcIdNumber);
                         if (!clientBuyDetailsList.isEmpty()) {
+                            double totalGrossAmount = 0;
+                            double totalDiscountedAmount = 0;
                             for (BuyDetails details : clientBuyDetailsList) {
                                 System.out.println("Detalles de la compra:");
                                 System.out.println("Pizza: " + details.getPizzaName());
@@ -90,14 +93,21 @@ public class LaboratorioDosJavaa {
                                 System.out.println("Monto total bruto: " + details.getGrossTotalAmount());
                                 System.out.println("Monto con descuento: " + details.getDiscountedAmount());
                                 System.out.println("--------------------");
+
+                                totalGrossAmount += details.getGrossTotalAmount();
+                                totalDiscountedAmount += details.getDiscountedAmount();
                             }
+                            System.out.println("Monto Total Bruto de todas las compras: " + totalGrossAmount);
+                            System.out.println("Monto Total con Descuento de todas las compras: " + totalDiscountedAmount);
+                            return;
                         } else {
                             System.out.println("No se ha realizado ninguna compra.");
+                            return;
                         }
                     } else {
                         System.out.println("No se ha realizado ninguna compra.");
+                        return;
                     }
-                    break;
                 default:
                     System.out.println("Error: Ingrese una opcion valida");
             }
@@ -259,8 +269,11 @@ public class LaboratorioDosJavaa {
                 discountedAmount = grossTotalAmount * 0.95;
             }
         }
-        System.out.println("Monto Total Bruto:" + grossTotalAmount);
-        System.out.println("Monto Total con Descuento: " + discountedAmount);
+
+        grossTotalAmountAcumulative += grossTotalAmount;
+        discountedAmountAcumulative += discountedAmount;
+        System.out.println("Monto Total Bruto: " + grossTotalAmountAcumulative);
+        System.out.println("Monto Total con Descuento: " + discountedAmountAcumulative);
         if (!discountCode.isEmpty()) {
             System.out.println("Codigo de descuento: " + discountCode);
         }
@@ -338,6 +351,7 @@ public class LaboratorioDosJavaa {
         int opcIdNumber;
         System.out.println("Ingrese su cedula: ");
         opcIdNumber = scanner.nextInt();
+        scanner.nextLine();
 
         if (Registro.signUpClient.containsKey(opcIdNumber)) {
             Registro clientToEditInfo = Registro.signUpClient.get(opcIdNumber);
@@ -352,10 +366,11 @@ public class LaboratorioDosJavaa {
                 case 1:
                     String newName = "";
                     System.out.println("Ingrese el nuevo nombre: ");
+                    scanner.nextLine();
                     newName = scanner.nextLine();
                     clientToEditInfo.setName(newName);
                     System.out.println("Cambio realizado con exito!");
-                    break;
+                    mainMenu();
 
                 case 2:
                     String newGenre = "";
@@ -375,7 +390,7 @@ public class LaboratorioDosJavaa {
                         System.out.println("Error: Ingrese una opcion valida. Intentelo de nuevo");
                     }
                     clientToEditInfo.setGenre(newGenre);
-
+                    mainMenu();
                 case 3:
                     int opcProvince;
                     System.out.println("Seleccione la provincia a la que desea cambiar");
@@ -390,6 +405,7 @@ public class LaboratorioDosJavaa {
             }
             System.out.println("Informacion actualizada correctamente: ");
             printNewClientInfo(clientToEditInfo);
+            mainMenu();
         } else {
             System.out.println("Cliente no encontrado");
         }
