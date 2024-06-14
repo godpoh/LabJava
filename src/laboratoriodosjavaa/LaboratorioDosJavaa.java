@@ -4,14 +4,16 @@
  */
 package laboratoriodosjavaa;
 
+import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class LaboratorioDosJavaa {
 
-    private static BuyDetails clientBuyDetails;
+    public static HashMap<Integer, List<BuyDetails>> BuyDetailsDict = new HashMap<>();
 
     public static void main(String[] args) {
         mainMenu();
@@ -75,19 +77,27 @@ public class LaboratorioDosJavaa {
                     orderPizza(opcIdNumber);
                     break;
                 case 2:
-                    if (clientBuyDetails != null) {
-                        System.out.println("Detalles de la compra:");
-                        System.out.println("Pizza: " + clientBuyDetails.getPizzaName());
-                        System.out.println("Pasta: " + clientBuyDetails.getTypeOfPaste());
-                        System.out.println("Tamaño: " + clientBuyDetails.getPizzaSize());
-                        System.out.println("Ingredientes: " + clientBuyDetails.getIngredients());
-                        System.out.println("Adicionales: " + clientBuyDetails.getAdditionals());
-                        System.out.println("Monto total bruto: " + clientBuyDetails.getGrossTotalAmount());
-                        System.out.println("Monto con descuento: " + clientBuyDetails.getDiscountedAmount());
+                    if (BuyDetailsDict.containsKey(opcIdNumber)) {
+                        List<BuyDetails> clientBuyDetailsList = BuyDetailsDict.get(opcIdNumber);
+                        if (!clientBuyDetailsList.isEmpty()) {
+                            for (BuyDetails details : clientBuyDetailsList) {
+                                System.out.println("Detalles de la compra:");
+                                System.out.println("Pizza: " + details.getPizzaName());
+                                System.out.println("Pasta: " + details.getTypeOfPaste());
+                                System.out.println("Tamaño: " + details.getPizzaSize());
+                                System.out.println("Ingredientes: " + details.getIngredients());
+                                System.out.println("Adicionales: " + details.getAdditionals());
+                                System.out.println("Monto total bruto: " + details.getGrossTotalAmount());
+                                System.out.println("Monto con descuento: " + details.getDiscountedAmount());
+                                System.out.println("--------------------");
+                            }
+                        } else {
+                            System.out.println("No se ha realizado ninguna compra.");
+                        }
                     } else {
                         System.out.println("No se ha realizado ninguna compra.");
                     }
-                    return;
+                    break;
                 default:
                     System.out.println("Error: Ingrese una opcion valida");
             }
@@ -257,8 +267,15 @@ public class LaboratorioDosJavaa {
         String idBuy = generateIdBuy();
 
         BuyDetails clientBuyDetails = new BuyDetails(idBuy, selectedPizza.getName(), pasta, type, String.join(", ", ingredients), additionals, discountCode, "", (int) grossTotalAmount, (int) discountedAmount);
-        
-        BuyDetails.BuyDetailsDict.put(opcIdNumber,clientBuyDetails);
+
+        // Verifica si el cliente ya tiene una lista de compras asociada
+        if (BuyDetailsDict.containsKey(opcIdNumber)) {
+            BuyDetailsDict.get(opcIdNumber).add(clientBuyDetails);
+        } else {
+            List<BuyDetails> buyDetailsList = new ArrayList<>();
+            buyDetailsList.add(clientBuyDetails);
+            BuyDetailsDict.put(opcIdNumber, buyDetailsList);
+        }
     }
 
 // menuSignUp funciones
@@ -391,28 +408,15 @@ public class LaboratorioDosJavaa {
         } else {
             System.out.println("Cliente no encontrado");
         }
-
     }
 
     public static String generateDiscountCode() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder code = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            int index = random.nextInt(characters.length());
-            code.append(characters.charAt(index));
-        }
-        return code.toString();
+        return String.format("%04d", random.nextInt(10000));
     }
 
     public static String generateIdBuy() {
-        String characters = "123456789";
-        StringBuilder identificatorBuy = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            int index = random.nextInt(characters.length());
-            identificatorBuy.append(characters.charAt(index));
-        }
-        return identificatorBuy.toString();
+        return String.format("%06d", random.nextInt(1000000));
     }
 }

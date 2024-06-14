@@ -17,7 +17,7 @@ public class BuyDetails {
     private int grossTotalAmount;
     private int discountedAmount;
 
-    public static HashMap<Integer, BuyDetails> BuyDetailsDict = new HashMap<>();
+    public static HashMap<Integer, BuyDetails> BuyDetailsDictt = new HashMap<>();
     
     public BuyDetails(String idBuy, String pizzaName, String typeOfPaste, String pizzaSize, String ingredients,
             String additionals, String discountCode, String date, int grossTotalAmount, int discountedAmount) {
