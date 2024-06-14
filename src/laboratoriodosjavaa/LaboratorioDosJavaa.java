@@ -226,8 +226,8 @@ public class LaboratorioDosJavaa {
             System.out.println("Ya ha comprado esta pizza anteriormente.");
             return;
         }
-
-        ArrayList<String> ingredients = selectedPizza.getIngredients();
+        ArrayList<String> ingredients = new ArrayList<>(selectedPizza.getIngredients());
+        
         while (true) {
             System.out.println("Ingredientes de la pizza:");
             for (int i = 0; i < ingredients.size(); i++) {
