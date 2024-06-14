@@ -13,8 +13,12 @@ import java.util.Scanner;
 public class LaboratorioDosJavaa {
 
     public static HashMap<Integer, List<BuyDetails>> BuyDetailsDict = new HashMap<>();
-     public static double grossTotalAmountAcumulative = 0;
-    public static double discountedAmountAcumulative = 0; 
+    public static double grossTotalAmountAcumulative = 0;
+    public static double discountedAmountAcumulative = 0;
+
+    private static double totalBruto;
+    private static double totalConDescuento;
+    private static int currentUserId;
 
     public static void main(String[] args) {
         mainMenu();
@@ -52,9 +56,13 @@ public class LaboratorioDosJavaa {
         System.out.println("Ingrese su cedula: ");
         opcIdNumber = scanner.nextInt();
 
+        totalBruto = 0;
+        totalConDescuento = 0;
+        grossTotalAmountAcumulative = 0; 
+        discountedAmountAcumulative = 0;
+
         if (Registro.signUpClient.containsKey(opcIdNumber)) {
             boolean isAdmin = Registro.signUpClient.get(opcIdNumber).isAdmin();
-
             if (isAdmin) {
                 menuLogInAdmin();
             } else {
@@ -213,6 +221,11 @@ public class LaboratorioDosJavaa {
 
         int opcPizzaType = scanner.nextInt();
         Pizza selectedPizza = Pizza.getPizzaTypes().get(opcPizzaType - 1);
+
+        if (hasUserAlreadyBoughtThisPizza(opcIdNumber, selectedPizza.getName(), type)) {
+            System.out.println("Ya ha comprado esta pizza anteriormente.");
+            return;
+        }
 
         ArrayList<String> ingredients = selectedPizza.getIngredients();
         while (true) {
@@ -434,5 +447,17 @@ public class LaboratorioDosJavaa {
     public static String generateIdBuy() {
         Random random = new Random();
         return String.format("%06d", random.nextInt(1000000));
+    }
+
+    public static boolean hasUserAlreadyBoughtThisPizza(int opcIdNumber, String pizzaName, String pizzaSize) {
+        if (BuyDetailsDict.containsKey(opcIdNumber)) {
+            List<BuyDetails> buyDetailsList = BuyDetailsDict.get(opcIdNumber);
+            for (BuyDetails details : buyDetailsList) {
+                if (details.getPizzaName().equals(pizzaName) && details.getPizzaSize().equals(pizzaSize)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
