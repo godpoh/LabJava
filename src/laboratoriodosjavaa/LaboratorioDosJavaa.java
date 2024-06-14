@@ -58,7 +58,7 @@ public class LaboratorioDosJavaa {
 
         totalBruto = 0;
         totalConDescuento = 0;
-        grossTotalAmountAcumulative = 0; 
+        grossTotalAmountAcumulative = 0;
         discountedAmountAcumulative = 0;
 
         if (Registro.signUpClient.containsKey(opcIdNumber)) {
@@ -171,7 +171,77 @@ public class LaboratorioDosJavaa {
 
     // menuLogIn funciones
     public static void reports() {
+        Scanner scanner = new Scanner(System.in);
+        
+        int opc;
+        System.out.println("1. Imprimir la lista de cedulas almacenadas en la estructura de datos de usuarios en forma de menu");
+        System.out.println("2. Imprimir en consola la cantidad de personas que han comprado pizzas por cada provincia.");
+        opc = scanner.nextInt();
+        
+        switch (opc) {
+            case 1:
+                report1();
+                break;
+            case 2:
+                report2();
+                break;
+            default:
+                System.out.println("Error: Seleccione una opcion valida.");
+        }
+    }
 
+    public static void report1() {
+
+    }
+
+    public static void report2() {
+        int SanJose = 0;
+        int Alajuela = 0;
+        int Guanacaste = 0;
+        int Limon = 0;
+        int Cartago = 0;
+        int Heredia = 0;
+        int Puntarenas = 0;
+
+        for (Registro client : Registro.signUpClient.values()) {
+            if (BuyDetailsDict.containsKey(client.getIdNumber())) {
+                String province = client.getProvince();
+
+                switch (province) {
+                    case "San José":
+                        SanJose++;
+                        break;
+                    case "Alajuela":
+                        Alajuela++;
+                        break;
+                    case "Guanacaste":
+                        Guanacaste++;
+                        break;
+                    case "Limón":
+                        Limon++;
+                        break;
+                    case "Cartago":
+                        Cartago++;
+                        break;
+                    case "Heredia":
+                        Heredia++;
+                        break;
+                    case "Puntarenas":
+                        Puntarenas++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        System.out.println("Cantidad de personas que han comprado pizza por provincia: ");
+        System.out.println("San Jose: " + SanJose);
+        System.out.println("Alajuela: " + Alajuela);
+        System.out.println("Guanacaste: " + Guanacaste);
+        System.out.println("Limon: " + Limon);
+        System.out.println("Cartago: " + Cartago);
+        System.out.println("Heredia: " + Heredia);
+        System.out.println("Puntarenas: " + Puntarenas);
     }
 
     public static void orderPizza(int opcIdNumber) {
@@ -227,7 +297,7 @@ public class LaboratorioDosJavaa {
             return;
         }
         ArrayList<String> ingredients = new ArrayList<>(selectedPizza.getIngredients());
-        
+
         while (true) {
             System.out.println("Ingredientes de la pizza:");
             for (int i = 0; i < ingredients.size(); i++) {
