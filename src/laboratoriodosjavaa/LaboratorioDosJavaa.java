@@ -192,7 +192,48 @@ public class LaboratorioDosJavaa {
     }
 
     public static void report1() {
+        if (Registro.signUpClient.isEmpty()) {
+            System.out.println("No hay clientes registrados.");
+            return;
+        }
 
+        if (BuyDetailsDict.isEmpty()) {
+            System.out.println("No hay clientes que hayan realizado compras.");
+            return;
+        }
+
+        System.out.println("Detalles de las compras de los clientes:");
+
+        boolean hasPurchases = false;
+
+        for (Integer cedula : BuyDetailsDict.keySet()) {
+            List<BuyDetails> clientBuyDetailsList = BuyDetailsDict.get(cedula);
+            if (!clientBuyDetailsList.isEmpty()) {
+                Registro client = Registro.signUpClient.get(cedula);
+                System.out.println("--------------------");
+                System.out.println("Cédula: " + client.getIdNumber());
+                System.out.println("Nombre: " + client.getName());
+                System.out.println("Género: " + client.getGenre());
+                System.out.println("Provincia: " + client.getProvince());
+                double totalGrossAmount = 0;
+                double totalDiscountedAmount = 0;
+                for (BuyDetails details : clientBuyDetailsList) {
+                    System.out.println("Nombre de la pizza: " + details.getPizzaName());
+                    System.out.println("Tamaño de la pizza: " + details.getPizzaSize());
+                    System.out.println("Monto total bruto: " + details.getGrossTotalAmount());
+                    System.out.println("Monto con descuento: " + details.getDiscountedAmount());
+                    totalGrossAmount += details.getGrossTotalAmount();
+                    totalDiscountedAmount += details.getDiscountedAmount();
+                }
+                System.out.println("Monto Total Bruto de todas las compras: " + totalGrossAmount);
+                System.out.println("Monto Total con Descuento de todas las compras: " + totalDiscountedAmount);
+                hasPurchases = true;
+            }
+        }
+
+        if (!hasPurchases) {
+            System.out.println("No hay clientes que hayan realizado compras.");
+        }
     }
 
     public static void report2() {
@@ -235,6 +276,7 @@ public class LaboratorioDosJavaa {
                 }
             }
         }
+
         System.out.println("Cantidad de personas que han comprado pizza por provincia: ");
         System.out.println("San Jose: " + SanJose);
         System.out.println("Alajuela: " + Alajuela);
@@ -293,7 +335,7 @@ public class LaboratorioDosJavaa {
         int opcPizzaType = scanner.nextInt();
         Pizza selectedPizza = Pizza.getPizzaTypes().get(opcPizzaType - 1);
 
-        if (hasUserAlreadyBoughtThisPizza(opcIdNumber, selectedPizza.getName(), type)) {
+        if (hasUserAlreadyBoughtThisPizza(opcIdNumber, selectedPizza.getName())) {
             System.out.println("Ya ha comprado esta pizza anteriormente.");
             return;
         }
@@ -362,6 +404,7 @@ public class LaboratorioDosJavaa {
             System.out.println("Codigo de descuento: " + discountCode);
         }
         String idBuy = generateIdBuy();
+        String Date = LocalDate.now().toString();
 
         double pricePepperoniBig = 6500.0 + (6500.0 * 0.10);
         double priceHawaianaMedium = 5500.0 + (5500.0 * 0.05);
@@ -471,15 +514,16 @@ public class LaboratorioDosJavaa {
                 System.out.println("Monto total con descuento: " + promotionDetail.getDiscountedAmount());
                 System.out.println("-----------------------------------");
                 System.out.println("Que disfrute!");
+
             }
-            return;
+            mainMenu();
         } else if (opcPromotionDay == 2) {
             System.out.println("No se selecciono la promocion del dia.");
         } else {
             System.out.println("Error: Ingrese una opcion valida 1. Si / 2. No");
         }
 
-        BuyDetails clientBuyDetails = new BuyDetails(idBuy, selectedPizza.getName(), pasta, type, String.join(", ", ingredients), additionals, discountCode, "", (int) grossTotalAmount, (int) discountedAmount);
+        BuyDetails clientBuyDetails = new BuyDetails(idBuy, selectedPizza.getName(), pasta, type, String.join(", ", ingredients), additionals, discountCode, Date, (int) grossTotalAmount, (int) discountedAmount);
 
         // Verifica si el cliente ya tiene una lista de compras asociada
         if (BuyDetailsDict.containsKey(opcIdNumber)) {
@@ -489,6 +533,7 @@ public class LaboratorioDosJavaa {
             buyDetailsList.add(clientBuyDetails);
             BuyDetailsDict.put(opcIdNumber, buyDetailsList);
         }
+        return;
     }
     // menuSignUp funciones
 
@@ -636,11 +681,11 @@ public class LaboratorioDosJavaa {
         return String.format("%06d", random.nextInt(1000000));
     }
 
-    public static boolean hasUserAlreadyBoughtThisPizza(int opcIdNumber, String pizzaName, String pizzaSize) {
+    public static boolean hasUserAlreadyBoughtThisPizza(int opcIdNumber, String pizzaName) {
         if (BuyDetailsDict.containsKey(opcIdNumber)) {
             List<BuyDetails> buyDetailsList = BuyDetailsDict.get(opcIdNumber);
             for (BuyDetails details : buyDetailsList) {
-                if (details.getPizzaName().equals(pizzaName) && details.getPizzaSize().equals(pizzaSize)) {
+                if (details.getPizzaName().equals(pizzaName)) {
                     return true;
                 }
             }
