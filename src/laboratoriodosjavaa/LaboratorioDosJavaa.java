@@ -223,13 +223,13 @@ public class LaboratorioDosJavaa {
                 for (BuyDetails details : clientBuyDetailsList) {
                     System.out.println("Nombre de la pizza: " + details.getPizzaName());
                     System.out.println("Tamaño de la pizza: " + details.getPizzaSize());
-                    System.out.println("Monto total bruto: " + details.getGrossTotalAmount());
-                    System.out.println("Monto con descuento: " + details.getDiscountedAmount());
+                    System.out.println("Monto de la pizza: " + details.getGrossTotalAmount());
+                    System.out.println("Monto de la pizza con descuento: " + details.getDiscountedAmount());
                     totalGrossAmount += details.getGrossTotalAmount();
                     totalDiscountedAmount += details.getDiscountedAmount();
                 }
-                System.out.println("Monto Total Bruto de todas las compras: " + totalGrossAmount);
-                System.out.println("Monto Total con Descuento de todas las compras: " + totalDiscountedAmount);
+                System.out.println("Monto Total Bruto: " + totalGrossAmount);
+                System.out.println("Monto Total con Descuento: " + totalDiscountedAmount);
                 hasPurchases = true;
             }
         }
@@ -469,8 +469,6 @@ public class LaboratorioDosJavaa {
                     System.out.println("Intentelo de nuevo.");
                     return;
             }
-            double finalPromotionPrice = promotionDayBrute + baseCostAdditionalDayPromotion;
-            System.out.println("Monto Total Bruto con adicional: " + finalPromotionPrice);
 
             Pizza pizzaPepperoni = Pizza.getPizzaTypes().get(0);
             ArrayList<String> ingredientsPizzaPepperoni = pizzaPepperoni.getIngredients();
@@ -492,10 +490,10 @@ public class LaboratorioDosJavaa {
             String ingredientsPizzaHawainaStr = String.join(", ", ingredientsPizzaHawaina);
 
             BuyDetails promotionDetails1 = new BuyDetails(idBuyPromotion, promotionPizzaName1, promotionTypeOfPaste1, promotionPizzaSize1, ingredientsPizzaPepperoniStr,
-                    promotionDayAditionals, "", promotionDate, finalPromotionPrice, promotionDiscountedAmount);
+                    promotionDayAditionals, "", promotionDate, pricePepperoniBig, promotionDiscountedAmount);
 
             BuyDetails promotionDetails2 = new BuyDetails(idBuyPromotion, promotionPizzaName2, promotionTypeOfPaste2, promotionPizzaSize2, ingredientsPizzaHawainaStr,
-                    promotionDayAditionals, "", promotionDate, finalPromotionPrice, promotionDiscountedAmount);
+                    promotionDayAditionals, "", promotionDate, priceHawaianaMedium, promotionDiscountedAmount);
 
             List<BuyDetails> promotionList = new ArrayList<>();
             promotionList.add(promotionDetails1);
@@ -516,9 +514,10 @@ public class LaboratorioDosJavaa {
                 System.out.println("Monto total bruto: " + promotionDetail.getGrossTotalAmount());
                 System.out.println("Monto total con descuento: " + promotionDetail.getDiscountedAmount());
                 System.out.println("-----------------------------------");
-                System.out.println("Que disfrute!");
-
             }
+            double finalPromotionPrice = promotionDayBrute + baseCostAdditionalDayPromotion;
+            System.out.println("Monto Total Bruto con adicional: " + finalPromotionPrice);
+            System.out.println("Que disfrute!");
             mainMenu();
         } else if (opcPromotionDay == 2) {
             System.out.println("No se selecciono la promocion del dia.");
@@ -610,6 +609,8 @@ public class LaboratorioDosJavaa {
             System.out.println("3. Cambiar provincia");
             opcMenu = scanner.nextInt();
 
+            boolean updated = false;
+
             switch (opcMenu) {
                 case 1:
                     String newName = "";
@@ -618,7 +619,8 @@ public class LaboratorioDosJavaa {
                     newName = scanner.nextLine();
                     clientToEditInfo.setName(newName);
                     System.out.println("Cambio realizado con exito!");
-                    mainMenu();
+                    updated = true;
+                    break;
 
                 case 2:
                     String newGenre = "";
@@ -630,15 +632,17 @@ public class LaboratorioDosJavaa {
                     opcGenre = scanner.nextInt();
                     if (opcGenre == 1) {
                         newGenre = "Masculino";
-                        break;
                     } else if (opcGenre == 2) {
                         newGenre = "Femenino";
-                        break;
                     } else {
                         System.out.println("Error: Ingrese una opcion valida. Intentelo de nuevo");
+                        break;
                     }
                     clientToEditInfo.setGenre(newGenre);
-                    mainMenu();
+                    System.out.println("Genero actualizado correctamente!");
+                    updated = true;
+                    break;
+
                 case 3:
                     int opcProvince;
                     System.out.println("Seleccione la provincia a la que desea cambiar");
@@ -649,11 +653,18 @@ public class LaboratorioDosJavaa {
 
                     String province = Registro.provinces.get(opcProvince - 1);
                     clientToEditInfo.setProvince(province);
+                    System.out.println("Provincia actualizada correctamente!");
+                    updated = true;
                     break;
+                default:
+                    System.out.println("Opción no válida");
             }
-            System.out.println("Informacion actualizada correctamente: ");
-            printNewClientInfo(clientToEditInfo);
-            mainMenu();
+
+            if (updated) {
+                System.out.println("Informacion actualizada correctamente: ");
+                printNewClientInfo(clientToEditInfo);
+                mainMenu();
+            }
         } else {
             System.out.println("Cliente no encontrado");
         }
