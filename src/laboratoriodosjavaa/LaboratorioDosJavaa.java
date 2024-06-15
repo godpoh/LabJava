@@ -218,6 +218,7 @@ public class LaboratorioDosJavaa {
                 System.out.println("Nombre: " + client.getName());
                 System.out.println("Genero: " + client.getGenre());
                 System.out.println("Provincia: " + client.getProvince());
+                System.out.println("-----------------------------------");
                 double totalGrossAmount = 0;
                 double totalDiscountedAmount = 0;
                 for (BuyDetails details : clientBuyDetailsList) {
@@ -227,6 +228,7 @@ public class LaboratorioDosJavaa {
                     System.out.println("Monto de la pizza con descuento: " + details.getDiscountedAmount());
                     totalGrossAmount += details.getGrossTotalAmount();
                     totalDiscountedAmount += details.getDiscountedAmount();
+                    System.out.println("-----------------------------------");
                 }
                 System.out.println("Monto Total Bruto: " + totalGrossAmount);
                 System.out.println("Monto Total con Descuento: " + totalDiscountedAmount);
@@ -427,7 +429,7 @@ public class LaboratorioDosJavaa {
         System.out.println("3. Postre");
         System.out.println("4. Ninguno");
         System.out.println("----------------------------");
-        System.out.println("Precio Bruto sin contar el producto adicional: " + promotionDayBrute);
+        System.out.println("Precio Bruto de la promocion sin contar el producto adicional: " + promotionDayBrute);
         System.out.println("----------------------------");
         System.out.println("Desea la promocion del dia?");
         System.out.println("1. Si");
@@ -490,7 +492,7 @@ public class LaboratorioDosJavaa {
             String ingredientsPizzaHawainaStr = String.join(", ", ingredientsPizzaHawaina);
 
             BuyDetails promotionDetails1 = new BuyDetails(idBuyPromotion, promotionPizzaName1, promotionTypeOfPaste1, promotionPizzaSize1, ingredientsPizzaPepperoniStr,
-                    promotionDayAditionals, "", promotionDate, pricePepperoniBig, promotionDiscountedAmount);
+                    "", "", promotionDate, pricePepperoniBig, promotionDiscountedAmount);
 
             BuyDetails promotionDetails2 = new BuyDetails(idBuyPromotion, promotionPizzaName2, promotionTypeOfPaste2, promotionPizzaSize2, ingredientsPizzaHawainaStr,
                     promotionDayAditionals, "", promotionDate, priceHawaianaMedium, promotionDiscountedAmount);
@@ -509,7 +511,6 @@ public class LaboratorioDosJavaa {
                 System.out.println("Tamaño de la pizza: " + promotionDetail.getPizzaSize());
                 System.out.println("Ingredientes: " + promotionDetail.getIngredients());
                 System.out.println("Productos adicionales: " + promotionDetail.getAdditionals());
-                System.out.println("Codigo de descuento: " + promotionDetail.getDiscountCode());
                 System.out.println("Fecha: " + promotionDetail.getDate());
                 System.out.println("Monto total bruto: " + promotionDetail.getGrossTotalAmount());
                 System.out.println("Monto total con descuento: " + promotionDetail.getDiscountedAmount());
@@ -521,6 +522,8 @@ public class LaboratorioDosJavaa {
             mainMenu();
         } else if (opcPromotionDay == 2) {
             System.out.println("No se selecciono la promocion del dia.");
+            System.out.println("Monto Total Bruto: " + grossTotalAmountAcumulative);
+            System.out.println("Monto Total con Descuento: " + discountedAmountAcumulative);
         } else {
             System.out.println("Error: Ingrese una opcion valida 1. Si / 2. No");
         }
