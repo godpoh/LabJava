@@ -4,6 +4,7 @@
  */
 package laboratoriodosjavaa;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
@@ -172,12 +173,12 @@ public class LaboratorioDosJavaa {
     // menuLogIn funciones
     public static void reports() {
         Scanner scanner = new Scanner(System.in);
-        
+
         int opc;
         System.out.println("1. Imprimir la lista de cedulas almacenadas en la estructura de datos de usuarios en forma de menu");
         System.out.println("2. Imprimir en consola la cantidad de personas que han comprado pizzas por cada provincia.");
         opc = scanner.nextInt();
-        
+
         switch (opc) {
             case 1:
                 report1();
@@ -208,7 +209,7 @@ public class LaboratorioDosJavaa {
                 String province = client.getProvince();
 
                 switch (province) {
-                    case "San José":
+                    case "San Jose":
                         SanJose++;
                         break;
                     case "Alajuela":
@@ -217,7 +218,7 @@ public class LaboratorioDosJavaa {
                     case "Guanacaste":
                         Guanacaste++;
                         break;
-                    case "Limón":
+                    case "Limon":
                         Limon++;
                         break;
                     case "Cartago":
@@ -362,6 +363,122 @@ public class LaboratorioDosJavaa {
         }
         String idBuy = generateIdBuy();
 
+        double pricePepperoniBig = 6500.0 + (6500.0 * 0.10);
+        double priceHawaianaMedium = 5500.0 + (5500.0 * 0.05);
+
+        double promotionDayBrute = priceHawaianaMedium + pricePepperoniBig;
+
+        int opcPromotionDay;
+        System.out.println("----------------------------");
+        System.out.println("Promocion del dia!");
+        System.out.println("1. Pizza de Pepperoni (Pasta Delgada, Grande)");
+        System.out.println("----------------------------");
+        System.out.println("2. Pizza Hawaiana (Pasta Gruesa, Mediana)");
+        System.out.println("----------------------------");
+        System.out.println("3. Productos adicionales(Opcional): ");
+        System.out.println("1. Refresco");
+        System.out.println("2. Pan de Ajo");
+        System.out.println("3. Postre");
+        System.out.println("4. Ninguno");
+        System.out.println("----------------------------");
+        System.out.println("Precio Bruto sin contar el producto adicional: " + promotionDayBrute);
+        System.out.println("----------------------------");
+        System.out.println("Desea la promocion del dia?");
+        System.out.println("1. Si");
+        System.out.println("2. No");
+        System.out.println("----------------------------");
+        System.out.println("Si anteriormente selecciono alguna pizza. Esta se descartara y se comprara unicamente las de la promocion!");
+
+        opcPromotionDay = scanner.nextInt();
+
+        if (opcPromotionDay == 1) {
+            System.out.println("Productos adicionales: ");
+            System.out.println("1. Refresco");
+            System.out.println("2. Pan de Ajo");
+            System.out.println("3. Postre");
+            System.out.println("4. Ninguno");
+
+            int opcAdditionalDayPromotion = scanner.nextInt();
+            String promotionDayAditionals = "";
+            double baseCostAdditionalDayPromotion = 0.0;
+
+            switch (opcAdditionalDayPromotion) {
+                case 1:
+                    promotionDayAditionals = "Refresco";
+                    baseCostAdditionalDayPromotion = 1500.0;
+                    break;
+                case 2:
+                    promotionDayAditionals = "Pan de Ajo";
+                    baseCostAdditionalDayPromotion = 1000.0;
+                    break;
+                case 3:
+                    promotionDayAditionals = "Postre";
+                    baseCostAdditionalDayPromotion = 1500.0;
+                    break;
+                case 4:
+                    promotionDayAditionals = "Ninguno";
+                    baseCostAdditionalDayPromotion = 0.0;
+                    break;
+                default:
+                    System.out.println("Intentelo de nuevo.");
+                    return;
+            }
+            double finalPromotionPrice = promotionDayBrute + baseCostAdditionalDayPromotion;
+            System.out.println("Monto Total Bruto con adicional: " + finalPromotionPrice);
+
+            Pizza pizzaPepperoni = Pizza.getPizzaTypes().get(0);
+            ArrayList<String> ingredientsPizzaPepperoni = pizzaPepperoni.getIngredients();
+
+            String idBuyPromotion = generateIdBuy();
+            String promotionPizzaName1 = "Pepperoni";
+            String promotionTypeOfPaste1 = "Delgada";
+            String promotionPizzaSize1 = "Grande";
+            String ingredientsPizzaPepperoniStr = String.join(", ", ingredientsPizzaPepperoni);
+            String promotionDate = LocalDate.now().toString();
+            int promotionDiscountedAmount = 0;
+
+            Pizza pizzaHawaina = Pizza.getPizzaTypes().get(1);
+            ArrayList<String> ingredientsPizzaHawaina = pizzaHawaina.getIngredients();
+
+            String promotionPizzaName2 = "Hawaina";
+            String promotionTypeOfPaste2 = "Gruesa";
+            String promotionPizzaSize2 = "Mediana";
+            String ingredientsPizzaHawainaStr = String.join(", ", ingredientsPizzaHawaina);
+
+            BuyDetails promotionDetails1 = new BuyDetails(idBuyPromotion, promotionPizzaName1, promotionTypeOfPaste1, promotionPizzaSize1, ingredientsPizzaPepperoniStr,
+                    promotionDayAditionals, "", promotionDate, finalPromotionPrice, promotionDiscountedAmount);
+
+            BuyDetails promotionDetails2 = new BuyDetails(idBuyPromotion, promotionPizzaName2, promotionTypeOfPaste2, promotionPizzaSize2, ingredientsPizzaHawainaStr,
+                    promotionDayAditionals, "", promotionDate, finalPromotionPrice, promotionDiscountedAmount);
+
+            List<BuyDetails> promotionList = new ArrayList<>();
+            promotionList.add(promotionDetails1);
+            promotionList.add(promotionDetails2);
+
+            BuyDetailsDict.put(opcIdNumber, promotionList);
+
+            System.out.println("Detalles de la compra:");
+            for (BuyDetails promotionDetail : promotionList) {
+                System.out.println("ID de compra: " + promotionDetail.getIdBuy());
+                System.out.println("Nombre de la pizza: " + promotionDetail.getPizzaName());
+                System.out.println("Tipo de pasta: " + promotionDetail.getTypeOfPaste());
+                System.out.println("Tamaño de la pizza: " + promotionDetail.getPizzaSize());
+                System.out.println("Ingredientes: " + promotionDetail.getIngredients());
+                System.out.println("Productos adicionales: " + promotionDetail.getAdditionals());
+                System.out.println("Codigo de descuento: " + promotionDetail.getDiscountCode());
+                System.out.println("Fecha: " + promotionDetail.getDate());
+                System.out.println("Monto total bruto: " + promotionDetail.getGrossTotalAmount());
+                System.out.println("Monto total con descuento: " + promotionDetail.getDiscountedAmount());
+                System.out.println("-----------------------------------");
+                System.out.println("Que disfrute!");
+            }
+            return;
+        } else if (opcPromotionDay == 2) {
+            System.out.println("No se selecciono la promocion del dia.");
+        } else {
+            System.out.println("Error: Ingrese una opcion valida 1. Si / 2. No");
+        }
+
         BuyDetails clientBuyDetails = new BuyDetails(idBuy, selectedPizza.getName(), pasta, type, String.join(", ", ingredients), additionals, discountCode, "", (int) grossTotalAmount, (int) discountedAmount);
 
         // Verifica si el cliente ya tiene una lista de compras asociada
@@ -373,8 +490,8 @@ public class LaboratorioDosJavaa {
             BuyDetailsDict.put(opcIdNumber, buyDetailsList);
         }
     }
+    // menuSignUp funciones
 
-// menuSignUp funciones
     public static void clientSignUp() {
         Scanner scanner = new Scanner(System.in);
 

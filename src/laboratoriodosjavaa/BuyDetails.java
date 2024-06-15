@@ -14,13 +14,13 @@ public class BuyDetails {
     private String additionals;
     private String discountCode;
     private String date;
-    private int grossTotalAmount;
-    private int discountedAmount;
+    private double grossTotalAmount;
+    private double discountedAmount;
 
     public static HashMap<Integer, BuyDetails> BuyDetailsDictt = new HashMap<>();
     
     public BuyDetails(String idBuy, String pizzaName, String typeOfPaste, String pizzaSize, String ingredients,
-            String additionals, String discountCode, String date, int grossTotalAmount, int discountedAmount) {
+            String additionals, String discountCode, String date, double grossTotalAmount, double discountedAmount) {
         this.idBuy = idBuy;
         this.pizzaName = pizzaName;
         this.typeOfPaste = typeOfPaste;
@@ -66,11 +66,11 @@ public class BuyDetails {
         return date;
     }
 
-    public int getGrossTotalAmount() {
+    public double getGrossTotalAmount() {
         return grossTotalAmount;
     }
 
-    public int getDiscountedAmount() {
+    public double getDiscountedAmount() {
         return discountedAmount;
     }
 }
