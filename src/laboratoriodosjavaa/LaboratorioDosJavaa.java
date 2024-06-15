@@ -17,10 +17,6 @@ public class LaboratorioDosJavaa {
     public static double grossTotalAmountAcumulative = 0;
     public static double discountedAmountAcumulative = 0;
 
-    private static double totalBruto;
-    private static double totalConDescuento;
-    private static int currentUserId;
-
     public static void main(String[] args) {
         mainMenu();
     }
@@ -57,8 +53,6 @@ public class LaboratorioDosJavaa {
         System.out.println("Ingrese su cedula: ");
         opcIdNumber = scanner.nextInt();
 
-        totalBruto = 0;
-        totalConDescuento = 0;
         grossTotalAmountAcumulative = 0;
         discountedAmountAcumulative = 0;
 
@@ -152,6 +146,7 @@ public class LaboratorioDosJavaa {
             System.out.println("1. Registrar Cliente");
             System.out.println("2. Editar Cliente");
             System.out.println("3. Eliminar Cliente");
+            System.out.println("4. Volver al menu principal");
 
             opc = scanner.nextInt();
             switch (opc) {
@@ -163,6 +158,9 @@ public class LaboratorioDosJavaa {
                     break;
                 case 3:
                     deleteClient();
+                    break;
+                case 4:
+                    mainMenu();
                     break;
                 default:
                     System.out.println("Error: Ingrese una opcion valida");
@@ -211,9 +209,9 @@ public class LaboratorioDosJavaa {
             if (!clientBuyDetailsList.isEmpty()) {
                 Registro client = Registro.signUpClient.get(cedula);
                 System.out.println("--------------------");
-                System.out.println("Cédula: " + client.getIdNumber());
+                System.out.println("Cedula: " + client.getIdNumber());
                 System.out.println("Nombre: " + client.getName());
-                System.out.println("Género: " + client.getGenre());
+                System.out.println("Genero: " + client.getGenre());
                 System.out.println("Provincia: " + client.getProvince());
                 double totalGrossAmount = 0;
                 double totalDiscountedAmount = 0;
@@ -662,6 +660,13 @@ public class LaboratorioDosJavaa {
         int opcIdNumber;
         System.out.println("Ingrese la cedula: ");
         opcIdNumber = scanner.nextInt();
+        
+        if (BuyDetailsDict.containsKey(opcIdNumber)) {
+        System.out.println("Este usuario ya ha comprado un producto. No puede eliminar la cuenta.");
+        return;
+    }
+
+        
 
         if (Registro.signUpClient.containsKey(opcIdNumber)) {
             Registro.signUpClient.remove(opcIdNumber);
