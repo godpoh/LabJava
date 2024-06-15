@@ -53,6 +53,11 @@ public class LaboratorioDosJavaa {
         System.out.println("Ingrese su cedula: ");
         opcIdNumber = scanner.nextInt();
 
+        if (BuyDetailsDict.containsKey(opcIdNumber)) {
+            System.out.println("Este usuario ya ha comprado un producto. No puede volver a comprar.");
+            return;
+        }
+
         grossTotalAmountAcumulative = 0;
         discountedAmountAcumulative = 0;
 
@@ -660,14 +665,11 @@ public class LaboratorioDosJavaa {
         int opcIdNumber;
         System.out.println("Ingrese la cedula: ");
         opcIdNumber = scanner.nextInt();
-        
+
         if (BuyDetailsDict.containsKey(opcIdNumber)) {
-        System.out.println("Este usuario ya ha comprado un producto. No puede eliminar la cuenta.");
-        return;
-    }
-
-        
-
+            System.out.println("Este usuario ya ha comprado un producto. No puede eliminar la cuenta.");
+            return;
+        }
         if (Registro.signUpClient.containsKey(opcIdNumber)) {
             Registro.signUpClient.remove(opcIdNumber);
             System.out.println("El cliente fue borrado exitosamente");
